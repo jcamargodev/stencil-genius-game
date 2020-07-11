@@ -1,0 +1,23 @@
+{
+    "parserOptions": {
+        "project": "./tsconfig.json"
+    },
+    "extends": ["plugin:@stencil/recommended", "plugin:prettier/recommended"],
+    "rules": {
+        "@stencil/decorators-style": [
+            "error",
+            {
+                "prop": "ignore",
+                "state": "inline",
+                "element": "inline",
+                "event": "inline",
+                "method": "multiline",
+                "watch": "multiline",
+                "listen": "multiline"
+            }
+        ],
+        "@stencil/prefer-vdom-listener": "off",
+        "@stencil/dependency-suggestions": "off",
+        "@stencil/own-methods-must-be-private": "off"
+    }
+}

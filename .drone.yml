@@ -1,0 +1,20 @@
+kind: pipeline
+type: kubernetes
+name: default
+trigger:
+    event:
+        - pull_request
+steps:
+    - name: install-deps
+      image: node:alpine
+      environment:
+          PICPAY_REGISTRY_AUTH_TOKEN:
+              from_secret: PICPAY_REGISTRY_AUTH_TOKEN
+      commands:
+          - echo "//npm.pkg.github.com/:_authToken=$PICPAY_REGISTRY_AUTH_TOKEN" >> .npmrc
+          - npm ci
+
+    - name: build-stencil
+      image: node:alpine
+      commands:
+          - npm run build
