@@ -1,13 +1,14 @@
-# Ionic PWA Toolkit
+# PicPay StencilJS Schematics
 
-The PWA Toolkit is a starting point for building Progressive Web Apps using Ionic and Stencil.
+The PicPay StencilJS Schematics is a starting point for building Progressive Web Apps using Stencil.
 This combination of tools gives you the ability to build a fast, efficient PWA out of the box.
 
-For more info check out our [homepage](https://ionicframework.com/pwa/toolkit)!
+For more info check StencilJS [docs](https://stenciljs.com/)!
 
 ## Features
 
--   `@ionic/core` for the UI.
+-   `@picpay/design-system-web` for the UI (coming soon)
+-   `@ionic/core` for the UI. (temporarily)
 -   Stencil for the application logic and routing
 -   Push Notifications setup
 -   Unit Tests
