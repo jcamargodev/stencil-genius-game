@@ -1,27 +1,12 @@
-import { Component, Host, h, State } from '@stencil/core';
-import { Subject, timer } from 'rxjs';
+import { Component, Element, Host, h, State } from '@stencil/core';
+import { Subject } from 'rxjs';
 import classnames from 'classnames';
 
-import { PlayStateType } from '../../models/play-state.model';
+import { GameService } from '../../services/game.service';
+import { ButtonService } from '../../services/button.service';
 
-enum OrderButton {
-    'redButton',
-    'greenButton',
-    'blueButton',
-    'yellowButton',
-}
-
-interface ConfigGame {
-    multiplyDifficulty: number;
-    multiplyTime: number;
-    minTime: number;
-}
-
-const config: ConfigGame = {
-    multiplyDifficulty: 0.75,
-    multiplyTime: 3,
-    minTime: 10,
-};
+import { GameStateType } from '../../models/game-state.model';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     tag: 'genius-game',
@@ -29,127 +14,55 @@ const config: ConfigGame = {
     shadow: true,
 })
 export class GeniusGame {
-    private redButton: HTMLGeniusButtonElement;
-    private greenButton: HTMLGeniusButtonElement;
-    private blueButton: HTMLGeniusButtonElement;
-    private yellowButton: HTMLGeniusButtonElement;
+    private _onDestroy: Subject<null> = new Subject();
 
-    private sequence$: Subject<number> = new Subject();
-    private sequence: number[] = [];
-    private input$: Subject<number> = new Subject();
-    private input: number[] = [];
+    @Element() host: HTMLGeniusGameElement;
 
-    @State() playState: PlayStateType = 'new';
-    @State() difficulty: number = 1;
-    @State() score: number = 0;
-    @State() personalRecord: number = 0;
-    @State() remainingTime: number = 0;
-    @State() config: ConfigGame = config;
+    @State() gameState: GameStateType;
+    @State() remainingTime: number;
+    @State() score: number;
+    @State() personalRecord: number;
 
     constructor() {
-        this.redButtonRef = this.redButtonRef.bind(this);
-        this.greenButtonRef = this.greenButtonRef.bind(this);
-        this.blueButtonRef = this.blueButtonRef.bind(this);
-        this.yellowButtonRef = this.yellowButtonRef.bind(this);
-        this.handlePlayButton = this.handlePlayButton.bind(this);
-        this.handleButton = this.handleButton.bind(this);
+        this.onPressPlayButton = this.onPressPlayButton.bind(this);
+        this.onPressButton = this.onPressButton.bind(this);
+    }
+
+    connectedCallback() {
+        GameService.gameState$.pipe(takeUntil(this._onDestroy)).subscribe((gameState) => (this.gameState = gameState));
+        GameService.score$.pipe(takeUntil(this._onDestroy)).subscribe((score) => (this.score = score));
+        GameService.remainingTime$
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe((remainingTime) => (this.remainingTime = remainingTime));
+        GameService.personalRecord$
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe((personalRecord) => (this.personalRecord = personalRecord));
     }
 
     componentDidLoad() {
-        this.redButton.addEventListener('click', () => {});
-        this.greenButton.addEventListener('click', () => {});
-        this.blueButton.addEventListener('click', () => {});
-        this.yellowButton.addEventListener('click', () => {});
-
-        this.sequence$.asObservable().subscribe((sequence) => this.renderSequence(sequence));
-        this.input$.asObservable().subscribe((input) => this.checkSequence(input));
+        ButtonService.setButtons([
+            this.host.shadowRoot.querySelector('genius-button.--top-left') as HTMLGeniusButtonElement,
+            this.host.shadowRoot.querySelector('genius-button.--top-right') as HTMLGeniusButtonElement,
+            this.host.shadowRoot.querySelector('genius-button.--bottom-left') as HTMLGeniusButtonElement,
+            this.host.shadowRoot.querySelector('genius-button.--bottom-right') as HTMLGeniusButtonElement,
+        ]);
     }
 
-    private redButtonRef(c: HTMLGeniusButtonElement) {
-        this.redButton = c;
+    disconnectedCallback() {
+        this._onDestroy.next();
+        this._onDestroy.complete();
+        GameService.destroy();
     }
 
-    private greenButtonRef(c: HTMLGeniusButtonElement) {
-        this.greenButton = c;
+    onPressPlayButton() {
+        GameService.startGame();
     }
 
-    private blueButtonRef(c: HTMLGeniusButtonElement) {
-        this.blueButton = c;
+    onPressButton(ev: CustomEvent<number>) {
+        this.gameState === 'playing' && GameService.checkSequence(ev?.detail);
     }
 
-    private yellowButtonRef(c: HTMLGeniusButtonElement) {
-        this.yellowButton = c;
-    }
-
-    private handlePlayButton() {
-        this.startGame();
-    }
-
-    private startGame() {
-        this.input$ = new Subject();
-        this.input$.asObservable().subscribe((input) => this.checkSequence(input));
-        this.input = [];
-        this.playState = 'memorize';
-        timer(1000).subscribe(() => {
-            const randomButton = Math.round(Math.random() * 3);
-            this.sequence$.next(randomButton);
-        });
-    }
-
-    private renderSequence(sequence: number) {
-        const time = 1000 * this.config.multiplyDifficulty;
-        this.sequence = [...this.sequence, ...[sequence]];
-        this.sequence.forEach((sequence, index) => {
-            timer(index * time).subscribe(() => {
-                (this[`${OrderButton[sequence]}`] as HTMLGeniusButtonElement).press();
-            });
-        });
-        timer(this.sequence.length * time).subscribe(() => {
-            const remaining = Math.round(this.sequence.length * this.config.multiplyTime);
-            this.playState = 'playing';
-            this.remainingTime = remaining >= this.config.minTime ? remaining : this.config.minTime;
-        });
-    }
-
-    private checkSequence(input: number) {
-        this.input = [...this.input, ...[input]];
-        const currentIndex = this.input.length - 1;
-        console.log('sequence', this.sequence);
-        console.log('input', this.input);
-        if (this.sequence[currentIndex] === input) {
-            this.input.length === this.sequence.length && this.startGame();
-            return true;
-        } else {
-            this.handleError();
-            return false;
-        }
-    }
-
-    private handleButton(ev: CustomEvent<number>) {
-        this.playState === 'playing' && this.input$.next(ev?.detail);
-    }
-
-    private handleError() {
-        this.playState = 'game-over';
-        timer(2000).subscribe(() => {
-            this.resetGame();
-        });
-    }
-
-    private resetGame() {
-        this.sequence$ = new Subject();
-        this.sequence$.asObservable().subscribe((sequence) => this.renderSequence(sequence));
-        this.sequence = [];
-        this.input$ = new Subject();
-        this.input$.asObservable().subscribe((input) => this.checkSequence(input));
-        this.input = [];
-        this.playState = 'new';
-        this.score = 0;
-        this.difficulty = 1;
-        this.remainingTime = 0;
-    }
-
-    private getYear() {
+    getYear() {
         return new Date().getFullYear();
     }
 
@@ -162,49 +75,25 @@ export class GeniusGame {
                 <div class="game">
                     <div
                         class={classnames('genius', {
-                            '--disabled': this.playState === 'memorize',
+                            '--disabled': this.gameState === 'memorize',
                         })}
                     >
                         <div class="genius__container">
-                            <genius-button
-                                type="top-left"
-                                ref={this.redButtonRef}
-                                onPress={this.handleButton}
-                            ></genius-button>
-                            <genius-button
-                                type="top-right"
-                                ref={this.greenButtonRef}
-                                onPress={this.handleButton}
-                            ></genius-button>
-                            <genius-button
-                                type="bottom-left"
-                                ref={this.blueButtonRef}
-                                onPress={this.handleButton}
-                            ></genius-button>
-                            <genius-button
-                                type="bottom-right"
-                                ref={this.yellowButtonRef}
-                                onPress={this.handleButton}
-                            ></genius-button>
+                            <genius-button type="top-left" onPress={this.onPressButton}></genius-button>
+                            <genius-button type="top-right" onPress={this.onPressButton}></genius-button>
+                            <genius-button type="bottom-left" onPress={this.onPressButton}></genius-button>
+                            <genius-button type="bottom-right" onPress={this.onPressButton}></genius-button>
                             <genius-center-button
-                                action={this.playState}
+                                action={this.gameState}
                                 remainingTime={this.remainingTime}
-                                /**
-                                 * onClick={this.handlePlayButton}
-                                 *
-                                 * Esse é o jeito mais fácil de fazer, mas precisamos explorar um pouco mais a API do Stencil e
-                                 * fazer um outro tipo de solução que é tão performático quanto mas com um pouco mais de código,
-                                 * sendo assim, podendo ter mais controle da entrada e saída do evento
-                                 *
-                                 */
-                                onPress={this.handlePlayButton}
+                                onPress={this.onPressPlayButton}
                             ></genius-center-button>
                         </div>
                     </div>
                 </div>
                 <aside class="score">
-                    <genius-score label="Placar atual" score={this.score.toString()}></genius-score>
-                    <genius-score label="Recorde pessoal" score={this.personalRecord.toString()}></genius-score>
+                    <genius-score label="Placar atual" score={this.score?.toString()}></genius-score>
+                    <genius-score label="Recorde pessoal" score={this.personalRecord?.toString()}></genius-score>
                 </aside>
                 <footer class="footer">&copy; {this.getYear()} - PicPay Games</footer>
             </Host>

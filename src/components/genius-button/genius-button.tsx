@@ -2,21 +2,8 @@ import { Component, Element, Event, EventEmitter, Host, h, Method, Prop, State }
 import classnames from 'classnames';
 import { timer } from 'rxjs';
 
-import { ButtonType } from './../../models/button-type.model';
-
-enum ButtonSound {
-    'top-left' = 'red',
-    'top-right' = 'green',
-    'bottom-left' = 'blue',
-    'bottom-right' = 'yellow',
-}
-
-enum ButtonIndex {
-    'top-left' = 0,
-    'top-right' = 1,
-    'bottom-left' = 2,
-    'bottom-right' = 3,
-}
+import { ButtonType } from './../../models/button.model';
+import { ButtonMock } from './../../mocks/button.mock';
 
 @Component({
     tag: 'genius-button',
@@ -38,6 +25,11 @@ export class GeniusButton {
     /**
      * press
      */
+    @Event({ eventName: 'press' }) onPress: EventEmitter<number>;
+
+    /**
+     * press
+     */
     @Method()
     async press(playSound: boolean = true) {
         return new Promise((res) => {
@@ -54,11 +46,6 @@ export class GeniusButton {
         });
     }
 
-    /**
-     * press
-     */
-    @Event({ eventName: 'press' }) onPress: EventEmitter<number>;
-
     constructor() {
         this.handleClick = this.handleClick.bind(this);
     }
@@ -67,15 +54,15 @@ export class GeniusButton {
         this.audio = this.host.querySelector('audio');
     }
 
+    private handleClick() {
+        this.playSound();
+        this.onPress.emit(ButtonMock[this.type].index);
+    }
+
     private playSound() {
         this.audio.pause;
         this.audio.currentTime = 0;
         this.audio.play();
-    }
-
-    private handleClick() {
-        this.playSound();
-        this.onPress.emit(ButtonIndex[this.type]);
     }
 
     render() {
@@ -86,7 +73,7 @@ export class GeniusButton {
                 })}
                 onClick={this.handleClick}
             >
-                <audio src={`assets/sounds/${ButtonSound[this.type]}.mp3`}></audio>
+                <audio src={`assets/sounds/${ButtonMock[this.type].sound}.mp3`}></audio>
             </Host>
         );
     }

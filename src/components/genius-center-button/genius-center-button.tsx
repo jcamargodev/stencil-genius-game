@@ -1,8 +1,8 @@
-import { Component, Event, Host, h, Prop, EventEmitter, Listen } from '@stencil/core';
+import { Component, Event, Host, h, Prop, EventEmitter, Listen, State, Watch } from '@stencil/core';
 import classnames from 'classnames';
 
-import { PlayStateType } from './../../models/play-state.model';
-import { PlayStateMock } from './../../mocks/play-state.mock';
+import { GameStateType } from './../../models/game-state.model';
+import { PlayStateMock } from './../../mocks/game-state.mock';
 
 @Component({
     tag: 'genius-center-button',
@@ -18,10 +18,17 @@ export class GeniusCenterButton {
     /**
      * action
      */
-    @Prop() action: PlayStateType = 'new';
+    @Prop() action: GameStateType = 'new';
+    @Watch('action')
+    watchAction(action: string, oldAction: string) {
+        if (action !== oldAction) {
+            const labelName = PlayStateMock[action]?.title;
+            this.label = labelName.length > 0 ? labelName : this.label;
+        }
+    }
 
     /**
-     * action
+     * remainingTime
      */
     @Prop() remainingTime: number = 0;
 
@@ -29,6 +36,8 @@ export class GeniusCenterButton {
      * press
      */
     @Event() press: EventEmitter<null>;
+
+    @State() label: string = 'Começar';
 
     render() {
         return (
@@ -38,10 +47,8 @@ export class GeniusCenterButton {
                     '--countdown': this.action === 'playing',
                 })}
             >
-                {Object.entries(PlayStateMock).map((playState) => (
-                    <span class={classnames(`genius__action__label --${playState[0]}`)}>{playState[1].title}</span>
-                ))}
                 <span class="genius__action__countdown">{this.remainingTime}</span>
+                <span class={classnames(`genius__action__label`)}>{this.label}</span>
             </Host>
         );
     }

@@ -9,10 +9,10 @@ export const PlayStateMock: { [key: string]: { title: string } } = {
         title: 'Sua vez',
     },
     'next-sequence': {
-        title: 'Próxima sequência',
+        title: 'Acertou',
     },
     'game-over': {
-        title: 'Errou!!!',
+        title: 'Errou',
     },
     record: {
         title: 'Novo recorde, parabéns!',

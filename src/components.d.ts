@@ -5,8 +5,8 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ButtonType } from "./models/button-type.model";
-import { PlayStateType } from "./models/play-state.model";
+import { ButtonType } from "./models/button.model";
+import { GameStateType } from "./models/game-state.model";
 export namespace Components {
     interface GeniusButton {
         /**
@@ -22,9 +22,9 @@ export namespace Components {
         /**
           * action
          */
-        "action": PlayStateType;
+        "action": GameStateType;
         /**
-          * action
+          * remainingTime
          */
         "remainingTime": number;
     }
@@ -88,13 +88,13 @@ declare namespace LocalJSX {
         /**
           * action
          */
-        "action"?: PlayStateType;
+        "action"?: GameStateType;
         /**
           * press
          */
         "onPress"?: (event: CustomEvent<null>) => void;
         /**
-          * action
+          * remainingTime
          */
         "remainingTime"?: number;
     }
