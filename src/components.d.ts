@@ -5,67 +5,126 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ButtonType } from "./models/button-type.model";
+import { PlayStateType } from "./models/play-state.model";
 export namespace Components {
-    interface AppHome {
-    }
-    interface AppProfile {
+    interface GeniusButton {
         /**
-          * name
+          * press
          */
-        "name": string;
+        "press": (playSound?: boolean) => Promise<unknown>;
+        /**
+          * type
+         */
+        "type": ButtonType;
     }
-    interface AppRoot {
+    interface GeniusCenterButton {
+        /**
+          * action
+         */
+        "action": PlayStateType;
+        /**
+          * action
+         */
+        "remainingTime": number;
+    }
+    interface GeniusGame {
+    }
+    interface GeniusScore {
+        /**
+          * label
+         */
+        "label": string;
+        /**
+          * label
+         */
+        "score": string;
     }
 }
 declare global {
-    interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {
+    interface HTMLGeniusButtonElement extends Components.GeniusButton, HTMLStencilElement {
     }
-    var HTMLAppHomeElement: {
-        prototype: HTMLAppHomeElement;
-        new (): HTMLAppHomeElement;
+    var HTMLGeniusButtonElement: {
+        prototype: HTMLGeniusButtonElement;
+        new (): HTMLGeniusButtonElement;
     };
-    interface HTMLAppProfileElement extends Components.AppProfile, HTMLStencilElement {
+    interface HTMLGeniusCenterButtonElement extends Components.GeniusCenterButton, HTMLStencilElement {
     }
-    var HTMLAppProfileElement: {
-        prototype: HTMLAppProfileElement;
-        new (): HTMLAppProfileElement;
+    var HTMLGeniusCenterButtonElement: {
+        prototype: HTMLGeniusCenterButtonElement;
+        new (): HTMLGeniusCenterButtonElement;
     };
-    interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
+    interface HTMLGeniusGameElement extends Components.GeniusGame, HTMLStencilElement {
     }
-    var HTMLAppRootElement: {
-        prototype: HTMLAppRootElement;
-        new (): HTMLAppRootElement;
+    var HTMLGeniusGameElement: {
+        prototype: HTMLGeniusGameElement;
+        new (): HTMLGeniusGameElement;
+    };
+    interface HTMLGeniusScoreElement extends Components.GeniusScore, HTMLStencilElement {
+    }
+    var HTMLGeniusScoreElement: {
+        prototype: HTMLGeniusScoreElement;
+        new (): HTMLGeniusScoreElement;
     };
     interface HTMLElementTagNameMap {
-        "app-home": HTMLAppHomeElement;
-        "app-profile": HTMLAppProfileElement;
-        "app-root": HTMLAppRootElement;
+        "genius-button": HTMLGeniusButtonElement;
+        "genius-center-button": HTMLGeniusCenterButtonElement;
+        "genius-game": HTMLGeniusGameElement;
+        "genius-score": HTMLGeniusScoreElement;
     }
 }
 declare namespace LocalJSX {
-    interface AppHome {
-    }
-    interface AppProfile {
+    interface GeniusButton {
         /**
-          * name
+          * press
          */
-        "name"?: string;
+        "onPress"?: (event: CustomEvent<number>) => void;
+        /**
+          * type
+         */
+        "type"?: ButtonType;
     }
-    interface AppRoot {
+    interface GeniusCenterButton {
+        /**
+          * action
+         */
+        "action"?: PlayStateType;
+        /**
+          * press
+         */
+        "onPress"?: (event: CustomEvent<null>) => void;
+        /**
+          * action
+         */
+        "remainingTime"?: number;
+    }
+    interface GeniusGame {
+    }
+    interface GeniusScore {
+        /**
+          * label
+         */
+        "label"?: string;
+        /**
+          * label
+         */
+        "score"?: string;
     }
     interface IntrinsicElements {
-        "app-home": AppHome;
-        "app-profile": AppProfile;
-        "app-root": AppRoot;
+        "genius-button": GeniusButton;
+        "genius-center-button": GeniusCenterButton;
+        "genius-game": GeniusGame;
+        "genius-score": GeniusScore;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
-            "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
-            "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "genius-button": LocalJSX.GeniusButton & JSXBase.HTMLAttributes<HTMLGeniusButtonElement>;
+            "genius-center-button": LocalJSX.GeniusCenterButton & JSXBase.HTMLAttributes<HTMLGeniusCenterButtonElement>;
+            "genius-game": LocalJSX.GeniusGame & JSXBase.HTMLAttributes<HTMLGeniusGameElement>;
+            "genius-score": LocalJSX.GeniusScore & JSXBase.HTMLAttributes<HTMLGeniusScoreElement>;
         }
     }
 }

@@ -38,5 +38,14 @@
         "prettier": "^2.0.5",
         "puppeteer": "^5.0.0"
     },
-    "prettier": "picpay-tslint-rules/.prettierrc.json"
+    "prettier": "picpay-tslint-rules/.prettierrc.json",
+    "dependencies": {
+        "@material/elevation": "^7.0.0",
+        "@picpay/picpay-design-system-web": "0.0.20",
+        "@picpay/web-styles": "0.0.11",
+        "@types/classnames": "^2.2.10",
+        "bootstrap": "^4.5.0",
+        "classnames": "^2.2.6",
+        "rxjs": "^6.6.0"
+    }
 }

@@ -1,0 +1,163 @@
+@use '@picpay/picpay-design-system-web/dist/styles/border';
+@use '@picpay/picpay-design-system-web/dist/styles/color';
+@use '@picpay/picpay-design-system-web/dist/styles/font';
+@use '@picpay/picpay-design-system-web/dist/styles/spacing';
+
+@use '@material/elevation' as *;
+
+@import '@picpay/web-styles/variables';
+
+:host {
+    width: 100vw;
+    max-width: 1120px;
+    min-height: 100%;
+    min-height: 100vh;
+    margin: 0px auto;
+    padding: 0px spacing.size(2);
+    background-color: var(--apollo-background);
+    display: grid;
+    grid-gap: spacing.size(2);
+    grid-template:
+        'GAME HEADER'
+        'GAME SCORE'
+        'GAME FOOTER';
+    grid-template-rows: auto 214px auto;
+    grid-template-columns: auto 260px;
+
+    // grid-template:
+    //     'HEADER HEADER'
+    //     'GAME SCORE'
+    //     'FOOTER FOOTER';
+    // grid-template-rows: 80px auto 60px;
+    // grid-template-columns: auto 260px;
+
+    @include media-breakpoint-down(md) {
+        grid-template:
+            'HEADER'
+            'SCORE'
+            'GAME'
+            'FOOTER';
+        grid-template-rows: 80px 120px auto 60px;
+        grid-template-columns: auto;
+    }
+}
+
+.header {
+    grid-area: HEADER;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: spacing.size(2);
+
+    @include media-breakpoint-down(md) {
+        align-items: center;
+        margin-bottom: 0px;
+        margin-top: 0px;
+    }
+
+    &__title {
+        font-size: 1.7rem;
+        font-weight: 900;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.1rem;
+        color: rgba(var(--apollo-on-background-rgb), 0.76);
+        padding: 0px;
+        margin: 0px;
+        user-select: none;
+    }
+}
+
+.game {
+    grid-area: GAME;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .genius {
+        width: 70%;
+        height: 0px;
+        padding-top: 70%;
+        margin: auto;
+        border-radius: border.radius(full);
+        overflow: hidden;
+        background-color: color.background(dark, primary);
+        border: solid spacing.size(3) rgba(color.background(dark, tertiary), 0.1);
+        @include elevation(3);
+        position: relative;
+
+        @include media-breakpoint-down(sm) {
+            width: 85%;
+            padding-top: 85%;
+        }
+
+        &.--disabled {
+            &::before {
+                visibility: visible;
+                opacity: 1;
+                pointer-events: all;
+            }
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            z-index: 400;
+            width: 100%;
+            height: 100%;
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        &__container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 200;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template:
+                'RED GREEN'
+                'BLUE YELLOW';
+            grid-template-rows: auto auto;
+            grid-template-columns: auto auto;
+            grid-gap: 10px;
+        }
+    }
+}
+
+.score {
+    grid-area: SCORE;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    @include media-breakpoint-down(md) {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.footer {
+    grid-area: FOOTER;
+    font-size: 0.7rem;
+    text-align: center;
+    color: rgba(var(--apollo-on-background-rgb), 0.42);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    user-select: none;
+    margin-top: spacing.size(1);
+
+    @include media-breakpoint-down(md) {
+        align-items: center;
+        margin-bottom: 0px;
+        margin-top: 0px;
+    }
+}

@@ -17,7 +17,7 @@ export const config: Config = {
     ],
     plugins: [
         sass({
-            includePaths: ['./node_modules', './src/global/styles'],
+            includePaths: ['./node_modules', './src/styles'],
         }),
         postcss({
             plugins: [autoprefixer()],

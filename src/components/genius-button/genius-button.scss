@@ -1,0 +1,62 @@
+@use '@picpay/picpay-design-system-web/dist/styles/border';
+@use '@picpay/picpay-design-system-web/dist/styles/color';
+@use '@picpay/picpay-design-system-web/dist/styles/font';
+@use '@picpay/picpay-design-system-web/dist/styles/spacing';
+
+@use '@material/elevation' as *;
+
+@import '@picpay/web-styles/variables';
+
+@mixin generate-button($color, $direction, $radius) {
+    background-color: $color;
+    background-image: radial-gradient(ellipse at $direction, $color 0%, darken($color, 35%) 100%);
+    border-radius: $radius;
+
+    &:hover {
+        background-image: radial-gradient(ellipse at $direction, lighten($color, 10%) 0%, darken($color, 35%) 100%);
+    }
+
+    &:active,
+    &.--pressed {
+        background-image: radial-gradient(
+            ellipse at $direction,
+            #fff 0%,
+            lighten($color, 10%) 30%,
+            darken($color, 35%) 100%
+        );
+    }
+}
+
+genius-button {
+    cursor: pointer;
+    transition: box-shadow 200ms $cubic-bezier, background-image 200ms $cubic-bezier;
+    box-shadow: inset 10px 10px 20px rgba(255, 255, 255, 0.2);
+
+    &:hover {
+        box-shadow: inset 10px 10px 20px rgba(255, 255, 255, 0.3);
+    }
+
+    &.--disabled {
+        pointer-events: none;
+    }
+
+    &.--top-left {
+        grid-area: RED;
+        @include generate-button(red, right bottom, 100% 0px 0px 0px);
+    }
+
+    &.--top-right {
+        grid-area: GREEN;
+        @include generate-button(green, left bottom, 0px 100% 0px 0px);
+    }
+
+    &.--bottom-left {
+        grid-area: BLUE;
+        @include generate-button(blue, right top, 0px 0px 0px 100%);
+    }
+
+    &.--bottom-right {
+        grid-area: YELLOW;
+        @include generate-button(yellow, left top, 0px 0px 100% 0px);
+    }
+}

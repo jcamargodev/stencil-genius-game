@@ -1,0 +1,111 @@
+@use '@picpay/picpay-design-system-web/dist/styles/border';
+@use '@picpay/picpay-design-system-web/dist/styles/color';
+@use '@picpay/picpay-design-system-web/dist/styles/font';
+@use '@picpay/picpay-design-system-web/dist/styles/spacing';
+
+@use '@material/elevation' as *;
+
+@import '@picpay/web-styles/variables';
+
+$play-states: ('new', 'memorize', 'playing', 'game-over', 'record', 'next-sequence');
+
+genius-center-button {
+    position: absolute;
+    width: 35%;
+    height: 35%;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    background-color: var(--apollo-background);
+    border-radius: border.radius(full);
+    @include elevation(3);
+    cursor: pointer;
+    transition: box-shadow 200ms $cubic-bezier, background-color 200ms $cubic-bezier;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: spacing.size(1);
+
+    &:hover:not(.--disabled) {
+        @include elevation(8);
+        background-color: var(--apollo-background-z2);
+    }
+
+    &:active:not(.--disabled) {
+        @include elevation(4);
+        background-color: var(--apollo-background-z3);
+    }
+
+    &.--disabled {
+        cursor: default;
+    }
+
+    &.--countdown {
+        .genius__action {
+            &__label {
+                top: 60%;
+            }
+            &__countdown {
+                opacity: 1;
+                visibility: visible;
+                transform: translateX(-50%) translateY(-50%) scale(1);
+            }
+        }
+    }
+
+    @each $state in $play-states {
+        &.--#{$state} {
+            & > .--#{$state} {
+                transform: translateX(-50%) translateY(-50%) rotateX(0deg);
+            }
+        }
+    }
+
+    .genius__action {
+        &__label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%) rotateX(180deg);
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            transition: transform 750ms $cubic-bezier, top 200ms $cubic-bezier;
+            perspective: 400px;
+            font-size: font.size(4);
+            font-weight: font.weight(bold);
+            color: rgba(var(--apollo-on-background-rgb), 0.76);
+            text-align: center;
+            user-select: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            max-width: 100%;
+
+            @include media-breakpoint-down(xs) {
+                font-size: 0.8rem;
+                letter-spacing: 0.02rem;
+            }
+        }
+        &__countdown {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%) scale(0);
+            transition: all 200ms $cubic-bezier;
+            font-size: font.size(11);
+            font-weight: 900;
+            color: rgba(var(--apollo-on-background-rgb), 0.76);
+            text-align: center;
+            user-select: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            max-width: 100%;
+            opacity: 0;
+            visibility: hidden;
+
+            @include media-breakpoint-down(xs) {
+                font-size: 1rem;
+            }
+        }
+    }
+}
