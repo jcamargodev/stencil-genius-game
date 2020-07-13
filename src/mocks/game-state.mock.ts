@@ -1,6 +1,6 @@
 export const PlayStateMock: { [key: string]: { title: string } } = {
     new: {
-        title: 'Começar',
+        title: 'Iniciar',
     },
     memorize: {
         title: 'Memorize',
@@ -16,5 +16,8 @@ export const PlayStateMock: { [key: string]: { title: string } } = {
     },
     record: {
         title: 'Novo recorde, parabéns!',
+    },
+    timeout: {
+        title: 'Perdeu',
     },
 };

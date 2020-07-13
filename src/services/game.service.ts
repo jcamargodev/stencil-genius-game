@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, timer, Subject } from 'rxjs';
+import { BehaviorSubject, interval, Observable, timer, Subject, Subscription } from 'rxjs';
 import { takeUntil, shareReplay } from 'rxjs/operators';
 
 import { ButtonService } from './button.service';
@@ -14,11 +14,17 @@ class GamerClass {
     private gameState$$: BehaviorSubject<GameStateType> = new BehaviorSubject(GameDataMock.gameState);
     private difficulty$$: BehaviorSubject<number> = new BehaviorSubject(GameDataMock.difficulty);
     private score$$: BehaviorSubject<number> = new BehaviorSubject(GameDataMock.score);
-    private personalRecord$$: BehaviorSubject<number> = new BehaviorSubject(GameDataMock.personalRecord);
+    private score: number;
+    private personalRecord$$: BehaviorSubject<number> = new BehaviorSubject(
+        parseInt(window.localStorage.getItem('personalRecord')) || 0,
+    );
+    private personalRecord: number;
     private remainingTime$$: BehaviorSubject<number> = new BehaviorSubject(GameDataMock.remainingTime);
+    private remainingTime: number;
     private config$$: BehaviorSubject<ConfigGame> = new BehaviorSubject(GameDataMock.config);
     private config: ConfigGame;
     private buttons: HTMLGeniusButtonElement[];
+    private remainingInterval: Subscription;
 
     public gameState$: Observable<GameStateType> = this.gameState$$
         .asObservable()
@@ -39,12 +45,20 @@ class GamerClass {
 
     constructor() {
         this.config$.pipe(takeUntil(this._onDestroy)).subscribe((config: ConfigGame) => (this.config = config));
+        this.score$.pipe(takeUntil(this._onDestroy)).subscribe((score: number) => (this.score = score));
+        this.personalRecord$
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe((personalRecord: number) => (this.personalRecord = personalRecord));
+        this.remainingTime$
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe((remainingTime: number) => (this.remainingTime = remainingTime));
         ButtonService.buttons$
             .pipe(takeUntil(this._onDestroy))
             .subscribe((buttons: HTMLGeniusButtonElement[]) => (this.buttons = buttons));
     }
 
     public startGame() {
+        this.remainingInterval?.unsubscribe();
         this.gameState$$.next('memorize');
         this._input = [];
         timer(1000).subscribe(() => {
@@ -77,6 +91,7 @@ class GamerClass {
         this.score$$.next(0);
         this.difficulty$$.next(1);
         this.remainingTime$$.next(0);
+        this.remainingInterval?.unsubscribe();
     }
 
     private _renderSequence(lastSequence: number) {
@@ -90,18 +105,33 @@ class GamerClass {
         timer(this._sequence.length * time).subscribe(() => {
             this.gameState$$.next('playing');
             this.remainingTime$$.next(this._generateRemainingTime());
+            this.remainingInterval = interval(1000).subscribe(() => {
+                if (this.remainingTime > 0) {
+                    this.remainingTime$$.next(this.remainingTime - 1);
+                } else {
+                    this._gameOver(true);
+                }
+            });
         });
     }
 
     private _nextSequence() {
+        this.score$$.next(this.score + 1);
         this.gameState$$.next('next-sequence');
-        timer(2000).subscribe(() => {
+        timer(1000).subscribe(() => {
             this.startGame();
         });
     }
 
-    private _gameOver() {
-        this.gameState$$.next('game-over');
+    private _gameOver(isTimeout: boolean = false) {
+        [0, 1, 2, 3].forEach((id) => {
+            this.buttons[id].press();
+        });
+        if (this.score > this.personalRecord) {
+            window.localStorage.setItem('personalRecord', this.score.toString());
+            this.personalRecord$$.next(this.score);
+        }
+        isTimeout ? this.gameState$$.next('timeout') : this.gameState$$.next('game-over');
         timer(1000).subscribe(() => {
             this.resetGame();
         });

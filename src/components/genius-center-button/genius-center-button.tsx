@@ -37,7 +37,7 @@ export class GeniusCenterButton {
      */
     @Event() press: EventEmitter<null>;
 
-    @State() label: string = 'Começar';
+    @State() label: string = 'Iniciar';
 
     render() {
         return (

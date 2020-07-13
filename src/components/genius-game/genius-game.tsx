@@ -92,8 +92,22 @@ export class GeniusGame {
                     </div>
                 </div>
                 <aside class="score">
-                    <genius-score label="Placar atual" score={this.score?.toString()}></genius-score>
-                    <genius-score label="Recorde pessoal" score={this.personalRecord?.toString()}></genius-score>
+                    <genius-score
+                        label={
+                            this.score > this.personalRecord && this.personalRecord !== 0
+                                ? 'Novo recorde'
+                                : 'Placar atual'
+                        }
+                        score={this.score?.toString()}
+                    ></genius-score>
+                    <genius-score
+                        label={
+                            this.score > this.personalRecord && this.personalRecord !== 0
+                                ? 'Recorde anterior'
+                                : 'Recorde pessoal'
+                        }
+                        score={this.personalRecord?.toString()}
+                    ></genius-score>
                 </aside>
                 <footer class="footer">&copy; {this.getYear()} - PicPay Games</footer>
             </Host>
