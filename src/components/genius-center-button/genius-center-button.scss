@@ -19,12 +19,33 @@ genius-center-button {
     @include elevation(3);
     cursor: pointer;
     transition: box-shadow 200ms $cubic-bezier, background-color 200ms $cubic-bezier;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: spacing.size(1);
+    outline: none;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        border-radius: border.radius(full);
+        box-shadow: 0px 0px 0px 10px rgba(255, 255, 255, 0.4);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity, visibility 200ms $cubic-bezier;
+    }
+
+    &:focus:not(.--disabled) {
+        &::before {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
 
     &:hover:not(.--disabled) {
         @include elevation(8);

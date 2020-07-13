@@ -45,6 +45,7 @@ export class GeniusGame {
             this.host.shadowRoot.querySelector('genius-button.--top-right') as HTMLGeniusButtonElement,
             this.host.shadowRoot.querySelector('genius-button.--bottom-left') as HTMLGeniusButtonElement,
             this.host.shadowRoot.querySelector('genius-button.--bottom-right') as HTMLGeniusButtonElement,
+            this.host.shadowRoot.querySelector('genius-center-button') as HTMLGeniusCenterButtonElement,
         ]);
     }
 
@@ -79,10 +80,14 @@ export class GeniusGame {
                         })}
                     >
                         <div class="genius__container">
-                            <genius-button type="top-left" onPress={this.onPressButton}></genius-button>
-                            <genius-button type="top-right" onPress={this.onPressButton}></genius-button>
-                            <genius-button type="bottom-left" onPress={this.onPressButton}></genius-button>
-                            <genius-button type="bottom-right" onPress={this.onPressButton}></genius-button>
+                            <genius-button type="top-left" onPress={this.onPressButton} buttonId={0}></genius-button>
+                            <genius-button type="top-right" onPress={this.onPressButton} buttonId={1}></genius-button>
+                            <genius-button type="bottom-left" onPress={this.onPressButton} buttonId={2}></genius-button>
+                            <genius-button
+                                type="bottom-right"
+                                onPress={this.onPressButton}
+                                buttonId={3}
+                            ></genius-button>
                             <genius-center-button
                                 action={this.gameState}
                                 remainingTime={this.remainingTime}

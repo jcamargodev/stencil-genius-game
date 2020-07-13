@@ -8,7 +8,6 @@ export interface ConfigGame {
 
 export interface GameData {
     gameState: GameStateType;
-    difficulty: number;
     score: number;
     personalRecord: number;
     remainingTime: number;

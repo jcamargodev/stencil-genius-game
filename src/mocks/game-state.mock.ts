@@ -15,7 +15,7 @@ export const PlayStateMock: { [key: string]: { title: string } } = {
         title: 'Errou',
     },
     record: {
-        title: 'Novo recorde, parabéns!',
+        title: 'Novo recorde!',
     },
     timeout: {
         title: 'Perdeu',

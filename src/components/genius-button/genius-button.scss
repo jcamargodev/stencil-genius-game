@@ -17,8 +17,18 @@
         border-radius: $radius;
     }
 
-    &:hover {
+    &:hover,
+    &:focus {
         background-image: radial-gradient(ellipse at $direction, lighten($color, 10%) 0%, darken($color, 35%) 100%);
+    }
+
+    &:focus {
+        .genius__button {
+            &__focus-feedback {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
     }
 
     &:active,
@@ -39,6 +49,7 @@ genius-button {
     transition: transform 200ms $cubic-bezier, background-image 400ms $cubic-bezier;
     position: relative;
     overflow: hidden;
+    outline: none;
 
     &::before {
         content: '';
@@ -72,23 +83,68 @@ genius-button {
         grid-area: RED;
         @include generate-button(red, right bottom, 100% 0px 0px 0px);
         transform-origin: bottom right;
+
+        .genius__button {
+            &__focus-feedback {
+                top: 100%;
+                left: 100%;
+            }
+        }
     }
 
     &.--top-right {
         grid-area: GREEN;
         @include generate-button(green, left bottom, 0px 100% 0px 0px);
         transform-origin: bottom left;
+
+        .genius__button {
+            &__focus-feedback {
+                top: 100%;
+                right: 100%;
+            }
+        }
     }
 
     &.--bottom-left {
         grid-area: BLUE;
         @include generate-button(blue, right top, 0px 0px 0px 100%);
         transform-origin: top right;
+
+        .genius__button {
+            &__focus-feedback {
+                bottom: 100%;
+                left: 100%;
+            }
+        }
     }
 
     &.--bottom-right {
         grid-area: YELLOW;
         @include generate-button(yellow, left top, 0px 0px 100% 0px);
         transform-origin: top left;
+
+        .genius__button {
+            &__focus-feedback {
+                bottom: 100%;
+                right: 100%;
+            }
+        }
+    }
+
+    .genius__button {
+        &__focus-feedback {
+            width: 80%;
+            height: 0px;
+            padding-top: 80%;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: border.radius(full);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity, visibility 200ms $cubic-bezier;
+        }
     }
 }

@@ -10,9 +10,13 @@ import { GameStateType } from "./models/game-state.model";
 export namespace Components {
     interface GeniusButton {
         /**
+          * buttonId
+         */
+        "buttonId": number;
+        /**
           * press
          */
-        "press": (playSound?: boolean) => Promise<unknown>;
+        "press": (playSound?: boolean, handleClick?: boolean) => Promise<unknown>;
         /**
           * type
          */
@@ -75,6 +79,10 @@ declare global {
 }
 declare namespace LocalJSX {
     interface GeniusButton {
+        /**
+          * buttonId
+         */
+        "buttonId": number;
         /**
           * press
          */

@@ -36,7 +36,8 @@
         "jest-cli": "^26.1.0",
         "picpay-tslint-rules": "^1.0.4",
         "prettier": "^2.0.5",
-        "puppeteer": "^5.0.0"
+        "puppeteer": "^5.0.0",
+        "workbox-build": "4.3.1"
     },
     "prettier": "picpay-tslint-rules/.prettierrc.json",
     "dependencies": {

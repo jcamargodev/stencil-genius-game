@@ -8,7 +8,6 @@ export const ConfigGameMock: ConfigGame = {
 
 export const GameDataMock: GameData = {
     gameState: 'new',
-    difficulty: 1,
     score: 0,
     personalRecord: 0,
     remainingTime: 0,
